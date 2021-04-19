@@ -19,6 +19,9 @@ const AppBar = () => {
         <Link href="/flats">
           <a className="m-4">Flats</a>
         </Link>
+        <Link href="/travel-tips">
+          <a className="m-4">Travel Tips</a>
+        </Link>
         <Link href="/contact">
           <a className="m-4">Contact</a>
         </Link>
