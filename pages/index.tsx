@@ -3,9 +3,17 @@ import Layout from "../components/Layout";
 
 export default function Home() {
   return (
-    <Layout title="Home">
+    <Layout title="Home" appBarClassName="bg-blue-600 text-white">
+      <div className="bg-blue-600 text-white flex justify-center h-32 items-end">
+        <h1 className="text-4xl">Skyrent</h1>
+      </div>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="text-blue-600 fill-current">
+        <path
+          fillOpacity="1"
+          d="M0,256L30,234.7C60,213,120,171,180,176C240,181,300,235,360,240C420,245,480,203,540,181.3C600,160,660,160,720,176C780,192,840,224,900,213.3C960,203,1020,149,1080,122.7C1140,96,1200,96,1260,112C1320,128,1380,160,1410,176L1440,192L1440,0L1410,0C1380,0,1320,0,1260,0C1200,0,1140,0,1080,0C1020,0,960,0,900,0C840,0,780,0,720,0C660,0,600,0,540,0C480,0,420,0,360,0C300,0,240,0,180,0C120,0,60,0,30,0L0,0Z"
+        ></path>
+      </svg>
       <div className="container mx-auto mt-2">
-        <h1 className="text-4xl mb-2">Skyrent</h1>
         <div className="my-4">
           <h2 className="text-xl font-bold">Who we are</h2>
           <p>

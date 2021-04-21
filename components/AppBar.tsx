@@ -2,7 +2,11 @@ import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const AppBar = () => {
+type Props = {
+  className?: string;
+};
+
+const AppBar = ({ className }: Props) => {
   const [jwt, setJwt] = useState("");
   useEffect(() => {
     const jwtCookie = Cookies.get("jwt");
@@ -11,7 +15,7 @@ const AppBar = () => {
     }
   }, []);
   return (
-    <nav className="sticky top-0 bg-white z-20">
+    <nav className={`sticky top-0 bg-white z-20 ${className}`}>
       <div className="flex items-center container mx-auto">
         <Link href="/">
           <a className="mr-4">Home</a>
