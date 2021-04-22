@@ -16,6 +16,11 @@ const Layout = ({
   <div>
     <Head>
       <title>Skyrent | {title}</title>
+      <link rel="preconnect" href="https://fonts.gstatic.com" />
+      <link
+        href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+        rel="stylesheet"
+      />
     </Head>
     <AppBar className={appBarClassName} />
     <div>{children}</div>
