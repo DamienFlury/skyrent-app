@@ -10,11 +10,16 @@ import {
 } from "@stripe/react-stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import request, { gql } from "graphql-request";
+import Accordion from "./Accordion";
+import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 type FormState = {
   from: string;
   to: string;
   email: string;
+  laundry: boolean;
+  cleaning: boolean;
 };
 
 type Props = {
@@ -27,9 +32,25 @@ const numberFormatter = new Intl.NumberFormat("ch-DE", {
 });
 
 const createBookingMutation = gql`
-  mutation CreateBooking($user: ID!, $flat: ID!, $from: Date!, $to: Date!) {
+  mutation CreateBooking(
+    $user: ID!
+    $flat: ID!
+    $from: Date!
+    $to: Date!
+    $laundry: Boolean!
+    $cleaning: Boolean!
+  ) {
     createBooking(
-      input: { data: { user: $user, flat: $flat, from: $from, to: $to } }
+      input: {
+        data: {
+          user: $user
+          flat: $flat
+          from: $from
+          to: $to
+          laundry: $laundry
+          cleaning: $cleaning
+        }
+      }
     ) {
       booking {
         id
@@ -47,12 +68,17 @@ const FlatOrderForm = ({ flat }: Props) => {
     },
   });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
+  const [isPricetagExtended, setIsPricetagExpanded] = useState(false);
+  const router = useRouter();
 
   const stripe = useStripe();
   const elements = useElements();
 
   const from = watch("from");
   const to = watch("to");
+  const laundry = watch("laundry");
+  const cleaning = watch("cleaning");
 
   const days = useMemo(() => {
     const fromDate = parseISO(from);
@@ -84,6 +110,8 @@ const FlatOrderForm = ({ flat }: Props) => {
         flat: flat.id,
         from: values.from,
         to: values.to,
+        laundry: values.laundry,
+        cleaning: values.cleaning,
       }
     );
     const confirmedCardPayment = await stripe?.confirmCardPayment(
@@ -93,6 +121,7 @@ const FlatOrderForm = ({ flat }: Props) => {
       }
     );
     setIsProcessing(false);
+    router.push('/thank-you')
   };
 
   return (
@@ -146,17 +175,116 @@ const FlatOrderForm = ({ flat }: Props) => {
           ref={register}
         />
       </div>
-      {days > 0 && (
-        <div className="bg-gray-800 rounded py-2 px-4 mb-4 text-white">
-          {numberFormatter.format(days * flat.price_per_night)}
+      <div>
+        <div className="my-4">
+          <button
+            className="border border-solid border-2 block w-full px-4 py-2 rounded flex"
+            type="button"
+            onClick={() => setShowOptions((prev) => !prev)}
+          >
+            <span className="flex-1">Additional Options</span>
+            <motion.svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              style={{}}
+              animate={{
+                transform: showOptions ? "rotate(180deg)" : "rotate(0deg)",
+              }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </motion.svg>
+          </button>
+          <Accordion open={showOptions}>
+            <div className="border border-2 rounded border-solid p-4">
+              <div>
+                <input
+                  type="checkbox"
+                  name="laundry"
+                  ref={register}
+                  id="laundry"
+                  className="mr-2"
+                />
+                <label htmlFor="laundry">Laundry (+ CHF 50)</label>
+              </div>
+              <div>
+                <input
+                  type="checkbox"
+                  name="cleaning"
+                  ref={register}
+                  id="cleaning"
+                  className="mr-2"
+                />
+                <label htmlFor="cleaning">Cleaning (+ CHF 100)</label>
+              </div>
+            </div>
+          </Accordion>
         </div>
+      </div>
+      {days > 0 && (
+        <button
+          className="w-full text-left"
+          type="button"
+          onClick={() => setIsPricetagExpanded((prev) => !prev)}
+        >
+          <div className="bg-gray-800 rounded py-2 px-4 text-white">
+            {isPricetagExtended ? (
+              <table>
+                <tr>
+                  <td>Price for {days} days:</td>
+                  <td>{numberFormatter.format(days * flat.price_per_night)}</td>
+                </tr>
+                {laundry && (
+                  <tr>
+                    <td>+ Laundry:</td>
+                    <td>{numberFormatter.format(50)}</td>
+                  </tr>
+                )}
+                {cleaning && (
+                  <tr>
+                    <td>+ Cleaning:</td>
+                    <td>{numberFormatter.format(100)}</td>
+                  </tr>
+                )}
+                <tr className="border-t">
+                  <td />
+                  <td>
+                    {numberFormatter.format(
+                      days * flat.price_per_night +
+                        (laundry ? 50 : 0) +
+                        (cleaning ? 100 : 0)
+                    )}
+                  </td>
+                </tr>
+              </table>
+            ) : (
+              <div className="flex">
+                <span className="flex-1">
+                {numberFormatter.format(
+                  days * flat.price_per_night +
+                    (laundry ? 50 : 0) +
+                    (cleaning ? 100 : 0)
+                )}
+                </span>
+                <span className="text-gray-400">Click to expand</span>
+              </div>
+            )}
+          </div>
+        </button>
       )}
       <CheckoutForm />
       <button
         className="px-4 py-2 bg-purple-600 rounded text-white disabled:bg-gray-400 disabled:cursor-default"
         disabled={isProcessing}
       >
-        {isProcessing ? "Processing...": "Place order"}
+        {isProcessing ? "Processing..." : "Place order"}
       </button>
     </form>
   );

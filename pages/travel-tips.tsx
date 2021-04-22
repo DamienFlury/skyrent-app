@@ -22,12 +22,17 @@ const TipCard = ({ title, image, link }: TipCardProps) => (
 const TravelTips = () => (
   <Layout title="Travel Tips">
     <div className="container mx-auto">
-      <h1 className="text-xl">Travel Tips</h1>
-      <div className="flex">
+      <h1 className="text-4xl">Travel Tips</h1>
+      <div className="flex gap-4 my-4">
         <TipCard
           title="Costa Rica"
           image="/images/costa-rica.jpeg"
-          link="/costa-rica"
+          link="/places/costa-rica"
+        />
+        <TipCard
+          title="London"
+          image="/images/london.jpg"
+          link="/places/london"
         />
       </div>
     </div>

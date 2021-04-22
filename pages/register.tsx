@@ -1,7 +1,7 @@
 import request, { gql } from "graphql-request";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-import AuthForm from "../components/AuthForm";
+import AuthForm, { AuthFormState } from "../components/AuthForm";
 import Layout from "../components/Layout";
 
 const query = gql`
@@ -14,14 +14,10 @@ const query = gql`
   }
 `;
 
-type FormState = {
-  email: string;
-  password: string;
-};
 
 const Register = () => {
   const router = useRouter();
-  const handleSubmit = async ({ email, password }: FormState) => {
+  const handleSubmit = async ({ email, password }: AuthFormState) => {
     const { register } = await request(
       `${process.env.NEXT_PUBLIC_CMS_URL}/graphql`,
       query,

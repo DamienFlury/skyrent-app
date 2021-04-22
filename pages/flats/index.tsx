@@ -66,7 +66,7 @@ const Flats = ({ flats }: Props) => {
   return (
     <Layout title="Flats">
       <div className="container mx-auto">
-        <h1 className="text-2xl my-2">Flats</h1>
+        <h1 className="text-4xl my-2">Flats</h1>
         <div className="md:flex -mx-2">
           {flats.map((f) => (
             <div className="shadow p-4 w-96 mx-2 rounded" key={f.id}>

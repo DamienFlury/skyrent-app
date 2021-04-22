@@ -1,19 +1,14 @@
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import useJwt from "../hooks/useJwt";
 
 type Props = {
   className?: string;
 };
 
 const AppBar = ({ className }: Props) => {
-  const [jwt, setJwt] = useState("");
-  useEffect(() => {
-    const jwtCookie = Cookies.get("jwt");
-    if (jwtCookie) {
-      setJwt(jwtCookie);
-    }
-  }, []);
+  const jwt = useJwt();
   return (
     <nav className={`sticky top-0 bg-white z-20 ${className}`}>
       <div className="flex items-center container mx-auto">
@@ -31,13 +26,14 @@ const AppBar = ({ className }: Props) => {
         </Link>
         <span className="flex-1" />
         {jwt ? (
-          <Link href="/settings">
-            <a className="text-purple-600 rounded px-4 py-2 uppercase mr-2 hover:bg-purple-100 transition-colors duration-200">
-              Settings
-            </a>
-          </Link>
+          <button
+            className="text-purple-600 rounded px-4 py-2 uppercase mr-2 hover:bg-purple-100 transition-colors duration-200"
+            onClick={() => Cookies.remove("jwt")}
+          >
+            Logout
+          </button>
         ) : (
-          <Link href="/register">
+          <Link href="/login">
             <a className="rounded px-4 py-2 uppercase mr-2 transition-colors duration-200">
               Login
             </a>

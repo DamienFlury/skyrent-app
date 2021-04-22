@@ -5,7 +5,7 @@ type OnSubmitProps = {
   password: string;
 };
 
-type FormProps = {
+export type AuthFormState = {
   email: string;
   password: string;
 };
@@ -16,7 +16,7 @@ type Props = {
 };
 
 const AuthForm = ({ onSubmit, submitButtonText }: Props) => {
-  const { register, handleSubmit } = useForm<FormProps>();
+  const { register, handleSubmit } = useForm<AuthFormState>();
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -40,7 +40,7 @@ const AuthForm = ({ onSubmit, submitButtonText }: Props) => {
           id="password"
           type="password"
           name="password"
-          ref={register({ required: true })}
+          ref={register({ required: true, minLength: 2 })}
           className="px-4 py-2 rounded shadow w-full"
         />
       </div>
