@@ -90,7 +90,7 @@ const FlatOrderForm = ({ flat }: Props) => {
 
   const handleOrder = async (values: FormState) => {
     setIsProcessing(true);
-    const { error, paymentMethod } = await stripe!.createPaymentMethod({
+    const { paymentMethod } = await stripe!.createPaymentMethod({
       type: "card",
       card: elements!.getElement(CardElement)!,
       billing_details: {
